@@ -39,6 +39,7 @@ import {
       NoOfGroupMembers: "10",
       DateCreated: "3/1/2024",
       dateLastModified: "2/3/2024",
+      member:['memeber1','memeber2','memeber3','memeber4','memeber5','memeber6']
     },
     {
       GroupName: "Group2",
@@ -46,6 +47,7 @@ import {
       DateCreated: "3/2/2024",
       NoOfGroupMembers: "10",
       dateLastModified: "3/2/2024",
+      member:['memeber1','memeber2','memeber3','memeber4','memeber5','memeber6']
     },
     {
       GroupName: "Group3",
@@ -53,6 +55,7 @@ import {
       NoOfGroupMembers: "10",
       DateCreated: "4/2/2024",
       dateLastModified: "5/2/2024",
+      member:['memeber1','memeber2','memeber3','memeber4','memeber5','memeber6']
     },
     {
       GroupName: "Group4",
@@ -60,6 +63,7 @@ import {
       NoOfGroupMembers: "10",
       DateCreated: "6/2/2024",
       dateLastModified: "7/2/2024",
+      member:['memeber1','memeber2','memeber3','memeber4','memeber5','memeber6']
     },
     {
       GroupName: "Group5",
@@ -67,6 +71,7 @@ import {
       NoOfGroupMembers: "10",
       DateCreated: "8/2/2024",
       dateLastModified: "3/2/2024",
+      member:['memeber1','memeber2','memeber3','memeber4','memeber5','memeber6']
     },
   ];
   const userGroupName = "Bharat";
@@ -135,7 +140,7 @@ import {
                         },
                       }}
                       onClick={() => {
-                        naviagate("/metaData", { state: data });
+                        naviagate("/groupData", { state: data });
                       }}
                     >
                       <Typography>
@@ -516,10 +521,10 @@ import {
                           <Divider />
                           <DialogContent sx={{ overflow: "hidden" }}>
                             {[
-                              { key: "group1", value: "Bharat-Manoj" },
-                              { key: "group2", value: "Bharat-pranay" },
-                              { key: "group3", value: "pranay-Manoj" },
-                              { key: "group4", value: "srineevas-Manoj" },
+                              { key: "group1", value: "Group1" },
+                              { key: "group2", value: "Group2" },
+                              { key: "group3", value: "Group3" },
+                              { key: "group4", value: "Group4" },
                             ].map((item) => (
                               <Grid key={item.key} sx={{ ml: 2 }}>
                                 <FormControlLabel

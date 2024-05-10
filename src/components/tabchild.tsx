@@ -255,6 +255,7 @@ export default function ButtonAppBar() {
                   color="success"
                   onClick={() => {
                     toggleUpload(false);
+                    setShowGroupSelect(false);
                   }}
                 >
                   save
@@ -264,6 +265,7 @@ export default function ButtonAppBar() {
                   color="neutral"
                   onClick={() => {
                     toggleUpload(false);
+                    setShowGroupSelect(false);
                   }}
                 >
                   Cancel

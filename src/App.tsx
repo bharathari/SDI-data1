@@ -5,13 +5,16 @@ import AccordionIndicator from './components/filter';
 import TableSortAndSelection from './components/table1';
 import ButtonAppBar from './components/tabchild';
 import DataTable from './components/table1';
-import DataList from './components/cards';
+import DataList from './components/user-cards';
 import BasicGrid from './components/grid';
 import AccordionItemComponent from './components/mapaccord';
 import CheckboxList from './components/checkbox';
 import LandingAccord from './components/Saccro';
 import CardVariants from './components/meta-data-card';
 import InputFormProps from './components/dataEdit';
+import CardGroup from './components/group-data';
+import GroupData from './components/group-data';
+import TabsFlexPlacement from './components/group-data';
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -26,6 +29,7 @@ function App() {
             <Route path="" element={<DataList />} />
           </Route>
           <Route path='/metaData' element={<CardVariants/>}/>
+          <Route path='/groupData' element={<TabsFlexPlacement/>}/>
           <Route path='/editData' element={<InputFormProps/>}/>
         </Routes>
         </BrowserRouter>

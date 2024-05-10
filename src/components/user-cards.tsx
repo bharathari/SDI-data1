@@ -338,6 +338,7 @@ const DataList = () => {
                               "&:hover": {
                                 backgroundColor: "hsla(45, 3%, 85%, 1)", // Customize hover background color
                                 cursor: "pointer",
+                                color:'black'
                               },
                             }}
                             onClick={() => {
@@ -405,11 +406,12 @@ const DataList = () => {
                           <Button
                             variant="solid"
                             sx={{
-                              color: "black",
+                              color: "hsla(45, 3%, 85%, 1)",
                               backgroundColor: "grey",
                               "&:hover": {
                                 backgroundColor: "hsla(45, 3%, 85%, 1)", // Customize hover background color
                                 cursor: "pointer",
+                                color:'black'
                               },
                             }}
                             onClick={() => {

@@ -12,7 +12,7 @@ import { useState } from "react";
 import Tabs from '@mui/joy/Tabs';
 import TabList from '@mui/joy/TabList';
 import Tab, { tabClasses } from '@mui/joy/Tab';
-import { TabPanel } from "@mui/joy";
+import { Button, TabPanel } from "@mui/joy";
 import GroupAppBar from "./group-header";
 import GroupList from "./group-cards";
 interface ListItem {
@@ -35,6 +35,7 @@ const typeList: ListItem[] = [
 ];
 
 export default function BasicGrid() {
+
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { checked, value } = event.target;
@@ -54,6 +55,8 @@ export default function BasicGrid() {
 
     setSelectedValues(newSelectedValues);
   };
+
+  
   return (
     <>
     
@@ -77,10 +80,10 @@ export default function BasicGrid() {
             },
           }}
         >
-          <Tab disableIndicator sx={{fontWeight:500}} >  My Content</Tab>
-          <Tab disableIndicator sx={{fontWeight:500}}>Groups</Tab>
-          <Tab disableIndicator sx={{fontWeight:500}}>Organisation</Tab>
-          <Tab disableIndicator sx={{fontWeight:500}}>Public</Tab>
+          <Tab disableIndicator sx={{fontWeight:500}}> <Button variant="plain" sx={{backgroundColor:'neutral',color:'black'}}> My Content</Button></Tab>
+          <Tab disableIndicator sx={{fontWeight:500}}><Button variant="plain"  sx={{backgroundColor:'neutral',color:'black'}}>Groups</Button></Tab>
+          <Tab disableIndicator sx={{fontWeight:500}}><Button variant="plain"  sx={{backgroundColor:'neutral',color:'black'}}>Organisation</Button></Tab>
+          <Tab disableIndicator sx={{fontWeight:500}}><Button variant="plain"  sx={{backgroundColor:'neutral',color:'black'}}>Public</Button></Tab>
         </TabList>
     <TabPanel value={0} sx={{padding:'none',margin:'none'}}>
       <ButtonAppBar />
