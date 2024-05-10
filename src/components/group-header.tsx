@@ -2,14 +2,11 @@ import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import WarningRoundedIcon from "@mui/icons-material/WarningRounded";
-import InputFileUpload from "./fileupload";
+
 import Input from "@mui/joy/Input";
 import SearchIcon from "@mui/icons-material/Search";
 import MenuIconSideNavExample from "./filterbutton";
-import AppsMenu from "./view";
-import {  styled,} from "@mui/joy";
+
 
 
 

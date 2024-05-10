@@ -14,11 +14,11 @@ import {
   Option,
   Typography,
 } from "@mui/joy";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import {  useLocation, useNavigate } from "react-router-dom";
 import { Select } from "@mui/joy";
 import { FormGroup } from "@mui/material";
 
-const userName = "bharat";
+// const userName = "bharat";
 
 interface Group {
   value: string;

@@ -1,15 +1,11 @@
 import * as React from "react";
-import Box from "@mui/joy/Box";
 import Card from "@mui/joy/Card";
 import CardContent from "@mui/joy/CardContent";
-import Typography from "@mui/joy/Typography";
 import { Link, useLocation } from "react-router-dom";
 import { Table, TableBody, TableCell, TableRow  } from "@mui/material";
 import { Button, Tab, TabList,TabPanel,Tabs, styled } from "@mui/joy";
 import { Sheet } from "@mui/joy";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import img from '../images/Map-of-Andhra-Pradesh1.jpg';
-import { url } from "inspector";
 
 export default function CardGroup() {
   const value = useLocation();
