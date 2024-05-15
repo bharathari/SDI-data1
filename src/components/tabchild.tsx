@@ -65,11 +65,6 @@ const groups: Group[] = [
 
 export default function ButtonAppBar() {
   const [showGroupSelect, setShowGroupSelect] = React.useState(false);
-  const [open, setOpen] = React.useState<boolean>(false);
-  const [openEdit, setEdit] = React.useState<boolean>(false);
-  const [opendel, setdel] = React.useState<boolean>(false);
-  const [openShare, setShare] = React.useState<boolean>(false);
-  const [editShare, setEditShare] = React.useState<boolean>(false);
   const [selectedValues, setSelectedValues] = React.useState<string[]>([]);
   const [upload, toggleUpload] = React.useState(false);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -138,10 +133,6 @@ export default function ButtonAppBar() {
                     <Input color="success" size="sm" sx={{ width: "600px" }} />
                     <FormLabel>Description</FormLabel>
                     <Input color="success" size="md" />
-                    <FormLabel>Date created</FormLabel>
-                    <Input color="success" size="md" sx={{ width: "600px" }} />
-                    <FormLabel>Date Last Modified</FormLabel>
-                    <Input color="success" size="md" />
                     <FormLabel>Level Of Sharing</FormLabel>
                     <Select color="success">
                       <Option
@@ -207,8 +198,6 @@ export default function ButtonAppBar() {
                         </FormGroup>
                       </FormControl>
                     )}
-                    <FormLabel sx={{ mt: 1 }}>Description</FormLabel>
-                    <Input color="success" size="md" />
                     <FormLabel>Tags</FormLabel>
                     <Input color="success" size="md" />
                   </FormControl>
