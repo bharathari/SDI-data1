@@ -32,28 +32,26 @@ import Apartment from "@mui/icons-material/Apartment";
 import PublicIcon from "@mui/icons-material/Public";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import Diversity3OutlinedIcon from "@mui/icons-material/Diversity3Outlined";
-const cardData = [
+
+interface DataItem {
+  Name: string;
+  DateCreated: string;
+  dateLastModified?: string; // Optional property
+  Description: string;
+  levelofsharing: "admin" | "Public"; // Restricted to specific values
+  Source?: string;  // Optional property
+  PointOfContact?: string; // Optional property
+  Language?: string; // Optional property
+  SupplementalInformation?: string;
+  tags?: string; // Optional array of strings
+}
+const cardData:DataItem[] = [
   {
     Name: "map3",
     DateCreated: "3/1/2024",
     dateLastModified: "2/3/2024",
     Description: "gcrs map3",
     levelofsharing: "admin",
-    Source: "local",
-    PointOfContact: "jcgeonodetester",
-    Language: "eng",
-    SupplementalInformation: "No information provided",
-    hello1:
-      "hi everyone how are you Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias amet quisquam accusantium aliquid omnis, inventore saepe, modi corporis excepturi quod suscipit obcaecati soluta perspiciatis possimus maiores eligendi temporibus cumque repellat!",
-    hello2: "hi everyone how are you",
-    hello3: "hi everyone how are you",
-    hello4: "hi everyone how are you",
-    hello5: "hi everyone how are you",
-    hello6: "hi everyone how are you",
-    hello7: "hi everyone how are you",
-    hello8: "hi everyone how are you",
-    hello9: "hi everyone how are you",
-    hello10: "hi everyone how are you",
   },
   {
     Name: "Aerial Photography (Orthophoto) - 2021",
@@ -94,6 +92,7 @@ const cardData = [
 ];
 const userName = "Bharat";
 const DataList = () => {
+  const [selectedDataItem, setSelectedDataItem] = useState<DataItem | null>(null);
   const [open, setOpen] = React.useState<boolean>(false);
   const [openEdit, setEdit] = React.useState<boolean>(false);
   const [opendel, setdel] = React.useState<boolean>(false);
@@ -101,6 +100,15 @@ const DataList = () => {
   const [editShare, setEditShare] = React.useState<boolean>(false);
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
 
+  const handleOpenModal = (dataIndex: number) => {
+    setEdit(true);
+    setSelectedDataItem(cardData[dataIndex]);
+  };
+
+  const handleCloseModal = () => {
+    setEdit(false);
+    setSelectedDataItem(null); // Reset selected data on close
+  };
   const naviagate = useNavigate();
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { checked, value } = event.target;
@@ -135,7 +143,7 @@ const DataList = () => {
             <Card
               variant="outlined"
               key={index}
-              sx={{ width: "auto", minWidth: 800, mt: 3, bgcolor: "#fff" }}
+              sx={{ width: 700,mt: 3, bgcolor: "#fff" }}
             >
               <Box
                 sx={{
@@ -473,13 +481,13 @@ const DataList = () => {
                     <Button
                       variant="plain"
                       color="primary"
-                      onClick={() => setEdit(true)}
+                      onClick={() => handleOpenModal(index)}
                     >
                       <EditOutlinedIcon />
                     </Button>)}
                     <Modal
                       open={openEdit}
-                      onClose={() => setEdit(false)}
+                      onClose={handleCloseModal}
                       slots={{ backdrop: Backdrop }}
                       slotProps={{
                         backdrop: {
@@ -507,8 +515,8 @@ const DataList = () => {
                               },
                             }}
                             onClick={() => {
-                              setEdit(false);
-                              naviagate("/editData", { state: data })
+                              handleCloseModal()
+                              naviagate("/editData", { state: selectedDataItem })
                             }}
                           >
                             Edit

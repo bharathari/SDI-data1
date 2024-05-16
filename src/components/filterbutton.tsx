@@ -84,7 +84,7 @@ function NavMenuButton({
         <MenuButton
           {...props}
           slots={{ root: FilterAltOutlinedIcon }}
-          slotProps={{ root: { variant: 'plain', color: 'neutral' } }}
+          slotProps={{ root: { variant: 'outlined'} }}
           onMouseDown={() => {
             isOnButton.current = true;
           }}
@@ -154,6 +154,7 @@ export default function MenuIconSideNavExample() {
       <List>
         <ListItem>
           <NavMenuButton
+          
             label="Apps"
             open={menuIndex === 0}
             onOpen={() => setMenuIndex(0)}

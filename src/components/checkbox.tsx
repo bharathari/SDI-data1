@@ -261,5 +261,4 @@ const CheckboxList = () => {
     </>
   );
 };
-
 export default CheckboxList;

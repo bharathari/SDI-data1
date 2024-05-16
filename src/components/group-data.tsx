@@ -26,7 +26,6 @@ export default function CardGroup() {
     },
   });
   const temp1=data.member;
-  const temp2=data.Data;
   // delete data.member;
   // delete data.Data;
   console.log(temp1);
@@ -96,7 +95,7 @@ export default function CardGroup() {
                 <tbody>
                   {keys.map((key) => (
                     <tr key={key}>
-                      <td scope="row">
+                      <td scope="row" style={{width:'auto',maxWidth:'30%',overflow:'scroll'}}>
                         <b>{key}</b>
                       </td>
                       <td>{data[key]}</td>
@@ -151,7 +150,7 @@ export default function CardGroup() {
             stickyFooter stickyHeader variant="plain" hoverRow> 
               <thead>
               <tr >
-                <th style={{width:'25%'}}>Data Name</th>
+                <th style={{width:'auto',maxWidth:'20%',overflow:'unset'}}>Data Name</th>
                 <th>Owner</th>
 
                 <th>Date Last Modified</th>
@@ -163,6 +162,7 @@ export default function CardGroup() {
                 {data2.map((Data, index) => (
           <tr key={index}>
             {Data.map((info, infoIndex) => (
+              
               <td key={infoIndex}>{info}</td>
             ))}
           </tr>

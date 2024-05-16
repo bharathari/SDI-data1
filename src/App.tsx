@@ -15,6 +15,7 @@ import InputFormProps from './components/dataEdit';
 // import CardGroup from './components/group-data';
 // import GroupData from './components/group-data';
 import TabsFlexPlacement from './components/group-data';
+import MyComponent from './components/modaltext';
 
 function App() {
   // const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -41,6 +42,7 @@ function App() {
           </Route>
         </Routes>
         </BrowserRouter> */}
+        {/* <MyComponent/> */}
     </>
 
 

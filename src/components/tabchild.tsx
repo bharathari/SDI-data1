@@ -65,6 +65,7 @@ const groups: Group[] = [
 
 export default function ButtonAppBar() {
   const [showGroupSelect, setShowGroupSelect] = React.useState(false);
+
   const [selectedValues, setSelectedValues] = React.useState<string[]>([]);
   const [upload, toggleUpload] = React.useState(false);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -270,9 +271,9 @@ export default function ButtonAppBar() {
             sx={{
               width: ".3",
               color: "green",
-              ml: "10em",
-              mr: "16em",
-              flexGrow: "0.5",
+              ml: "10%",
+              mr: "25%",
+              // flexGrow: "0.5",
             }}
           />
           <Box>
