@@ -15,6 +15,7 @@ import Tab, { tabClasses } from '@mui/joy/Tab';
 import { Button, TabPanel } from "@mui/joy";
 import GroupAppBar from "./group-header";
 import GroupList from "./group-cards";
+import TabsBasic from "./forms";
 interface ListItem {
   key: string;
   value: string;
@@ -84,6 +85,8 @@ export default function BasicGrid() {
           <Tab disableIndicator sx={{fontWeight:500}}><Button variant="plain"  sx={{backgroundColor:'neutral',color:'black'}}>Groups</Button></Tab>
           <Tab disableIndicator sx={{fontWeight:500}}><Button variant="plain"  sx={{backgroundColor:'neutral',color:'black'}}>Organisation</Button></Tab>
           <Tab disableIndicator sx={{fontWeight:500}}><Button variant="plain"  sx={{backgroundColor:'neutral',color:'black'}}>Public</Button></Tab>
+          <Tab disableIndicator sx={{fontWeight:500}}><Button variant="plain"  sx={{backgroundColor:'neutral',color:'black'}}>Forms</Button></Tab>
+
         </TabList>
     <TabPanel value={0} sx={{padding:'none',margin:'none'}}>
       <ButtonAppBar />
@@ -162,6 +165,9 @@ export default function BasicGrid() {
       </TabPanel>
       <TabPanel value={3}>
         <b>Third</b> tab panel
+      </TabPanel>
+      <TabPanel value={4} sx={{backgroundColor:'white',display:'flex',flexDirection:'column',alignItems:'center'}}>
+        <TabsBasic/>
       </TabPanel>
       </Tabs>
     </>

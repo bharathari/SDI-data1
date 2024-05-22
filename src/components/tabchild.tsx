@@ -24,6 +24,7 @@ import {
   ModalDialog,
   Option,
   Select,
+  Stack,
   SvgIcon,
   styled,
 } from "@mui/joy";
@@ -91,7 +92,7 @@ export default function ButtonAppBar() {
 
   return (
     <Box sx={{ width: "100%", height: "sx" }}>
-      <AppBar position="static" sx={{ backgroundColor: "white" }}>
+      <Stack position="static" sx={{ backgroundColor: "white" }}>
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
           {userName && (
             <Button
@@ -283,7 +284,7 @@ export default function ButtonAppBar() {
             <MenuIconSideNavExample />
           </Box>
         </Toolbar>
-      </AppBar>
+      </Stack>
     </Box>
   );
 }
