@@ -23,8 +23,7 @@ import {
   accordionSummaryClasses,
   styled,
 } from "@mui/joy";
-import { Path, useForm } from "react-hook-form";
-import InputFileUpload from "./fileupload";
+import { Path, useForm, Controller } from "react-hook-form";
 import FileUploadSharpIcon from "@mui/icons-material/FileUploadSharp";
 import { BackupOutlined } from "@mui/icons-material";
 interface IFormInputs {
@@ -36,7 +35,7 @@ interface IFormInputs {
     typeOfHazard: string;
     location: string;
     region: string;
-    harzardLevel: string;
+    harzardLevel: string | null;
     economicLoss: string;
   };
   impact: {
@@ -511,7 +510,9 @@ export default function TabsBasic() {
   const [accord, Updateaccord] = React.useState(true);
   const [submit, updateSubmit] = React.useState(false);
   const [saveNext, updateSave] = React.useState(true);
-  const { register, handleSubmit, watch } = useForm({
+  const [emergencyAlerts, UpdateEmergency] = React.useState(false);
+  const [stockpileLocation, Updatestockpile] = React.useState(false);
+  const { register, handleSubmit, watch, control } = useForm({
     defaultValues,
   });
   const handlePrevious = () => {
@@ -541,6 +542,11 @@ export default function TabsBasic() {
     } else if (horizontalValue < 2) {
       setHorizontalValue((prev) => prev + 1);
     }
+  };
+  const handleHorizontalChange = (_event: any, newValue: number) => {
+    console.log(_event, newValue);
+    setHorizontalValue(newValue);
+    setVerticalValue(0);
   };
   const CustomTab = styled(Box)(({ theme }) => ({
     display: "flex",
@@ -601,10 +607,24 @@ export default function TabsBasic() {
                 {" "}
                 Incident Information
               </Button>
-              <Button variant="plain" color="neutral">
+              <Button
+                variant="plain"
+                color="neutral"
+                onClick={() => {
+                  UpdateEmergency(true);
+                  Updateaccord(false);
+                }}
+              >
                 Emergency Alerts
               </Button>
-              <Button variant="plain" color="neutral">
+              <Button
+                variant="plain"
+                color="neutral"
+                onClick={() => {
+                  Updatestockpile(true);
+                  Updateaccord(false);
+                }}
+              >
                 Stockpile Location
               </Button>
             </AccordionDetails>
@@ -625,6 +645,12 @@ export default function TabsBasic() {
               aria-label="Basic tabs"
               value={horizontalValue}
               sx={{ backgroundColor: "white" }}
+              onChange={(event, value) => {
+                if (typeof value === "number" && value >= 0) {
+                  setHorizontalValue(value);
+                  setVerticalValue(0);
+                }
+              }}
             >
               <TabList
                 sx={{
@@ -643,11 +669,8 @@ export default function TabsBasic() {
                   Infrastructure Impact
                 </CustomTabs>
               </TabList>
-              <TabPanel
-                value={0}
-                sx={{px:4}}
-              >
-                <Stack >
+              <TabPanel value={0} sx={{ px: 4 }}>
+                <Stack>
                   <form
                     onSubmit={handleSubmit((data) => {
                       console.log(data);
@@ -705,12 +728,24 @@ export default function TabsBasic() {
                           <FormLabel htmlFor="custom-input-hazard-type">
                             Type Of Hazard
                           </FormLabel>
-                          <Select placeholder="Hazard Drop Down" name="foo">
-                            <Option value="hazard1">hazard1</Option>
-                            <Option value="hazard2">hazard2</Option>
-                            <Option value="hazard3">hazard3</Option>
-                            <Option value="hazard4">hazard4</Option>
-                          </Select>
+                          <Controller
+                            name="mainInfo.typeOfHazard"
+                            control={control}
+                            defaultValue=""
+                            render={({ field }) => (
+                              <Select
+                                {...field}
+                                placeholder="Select a hazard"
+                                onChange={(event, value) =>
+                                  field.onChange(value)
+                                }
+                              >
+                                <Option value="Hazard1">Hazard1</Option>
+                                <Option value="Hazard2">Hazard2</Option>
+                                <Option value="Hazard3">Hazard3</Option>
+                              </Select>
+                            )}
+                          />
                         </CustomTab>
                         <CustomTab>
                           <FormLabel htmlFor="custom-input-location">
@@ -751,8 +786,16 @@ export default function TabsBasic() {
                           />
                         </CustomTab>
                       </Box>
-                      <IconButton sx={{flexDirection:'column'}}>
-                        <BackupOutlined sx={{fontSize:60}} htmlColor="#4855BBA"/>
+                      <IconButton
+                        sx={{
+                          flexDirection: "column",
+                          "&:hover": { backgroundColor: "transparent" },
+                        }}
+                      >
+                        <BackupOutlined
+                          sx={{ fontSize: 60 }}
+                          htmlColor="#458844ba"
+                        />
                         <Typography>Upload your data</Typography>
                       </IconButton>
                     </Box>
@@ -788,6 +831,11 @@ export default function TabsBasic() {
                   orientation="vertical"
                   value={verticalValue}
                   sx={{ backgroundColor: "white" }}
+                  onChange={(event, value) => {
+                    if (typeof value === "number" && value >= 0) {
+                      setVerticalValue(value);
+                    }
+                  }}
                 >
                   <TabList>
                     <CustomTabs
@@ -1136,6 +1184,11 @@ export default function TabsBasic() {
                   orientation="vertical"
                   value={verticalValue}
                   sx={{ minWidth: 300, backgroundColor: "white" }}
+                  onChange={(event, value) => {
+                    if (typeof value === "number" && value >= 0) {
+                      setVerticalValue(value);
+                    }
+                  }}
                 >
                   <TabList>
                     <CustomTabs
@@ -1285,6 +1338,7 @@ export default function TabsBasic() {
                             {...register(
                               `infrastructureImpact.infrastructure.${field.key}` as Path<IFormInputs>
                             )}
+                            
                           />
                         </CustomTab>
                       ))}
@@ -1358,6 +1412,212 @@ export default function TabsBasic() {
                     </form>
                   </TabPanel>
                 </Tabs>
+              </TabPanel>
+            </Tabs>
+          </Box>
+        </>
+      )}
+      {emergencyAlerts && (
+        <>
+          <Typography sx={{ fontWeight: "700", mb: "1%", mt: "2%" }}>
+            {" "}
+            Committee of Emergency Situation(CoES)/Emergency Alerts
+          </Typography>
+          <Box sx={{ width: "55%" }}>
+            <Tabs
+              aria-label="Basic tabs"
+              value={horizontalValue}
+              sx={{ backgroundColor: "white" }}
+            >
+              <TabList
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  backgroundColor: "white",
+                }}
+              >
+                <Tab disableIndicator color="success" variant="plain">
+                  Emergency Alerts
+                </Tab>
+              </TabList>
+              <TabPanel
+                value={0}
+                sx={{
+                  backgroundColor: "white",
+                  width: "60%",
+                  alignSelf: "center",
+                }}
+              >
+                <CustomTab>
+                  <FormLabel>Date</FormLabel>
+                  <Input type="date" placeholder="Enter Date" />
+                </CustomTab>
+                <CustomTab>
+                  <FormLabel>Alert type</FormLabel>
+                  <Select placeholder="Alert type" name="alert" required>
+                    <Option value="alerttype1">alerttype1</Option>
+                    <Option value="alerttype2">alerttype2</Option>
+                    <Option value="alerttype3">alerttype3</Option>
+                    <Option value="alerttype4">alerttype4</Option>
+                  </Select>
+                </CustomTab>
+                <CustomTab>
+                  <FormLabel>Affected area(in Sqkm)</FormLabel>
+                  <Input type="number" placeholder="No of sqkm Affected" />
+                </CustomTab>
+                <CustomTab>
+                  <FormLabel>Instructions</FormLabel>
+                  <Input type="number" placeholder="Enter the Instructions" />
+                </CustomTab>
+
+                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                  <Button
+                    variant="solid"
+                    color="success"
+                    onClick={() => {
+                      Updateaccord(true);
+                      UpdateEmergency(false);
+                    }}
+                    sx={{ alignSelf: "flex-end" }}
+                  >
+                    previous
+                  </Button>
+                  <Button
+                    variant="solid"
+                    color="success"
+                    type="submit"
+                    sx={{ alignSelf: "flex-end" }}
+                  >
+                    Submit
+                  </Button>
+                </Box>
+              </TabPanel>
+            </Tabs>
+          </Box>
+        </>
+      )}
+      {stockpileLocation && (
+        <>
+          <Typography sx={{ fontWeight: "700", mb: "1%", mt: "1%" }}>
+            Committee of Emergency Situation(CoES)/StockPile Location
+          </Typography>
+          <Box sx={{ width: "55%" }}>
+            <Tabs
+              aria-label="Basic tabs"
+              value={horizontalValue}
+              sx={{ backgroundColor: "white" }}
+            >
+              <TabList
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  backgroundColor: "white",
+                }}
+              >
+                <Tab disableIndicator color="success" variant="plain">
+                  Stockpile Location
+                </Tab>
+              </TabList>
+              <TabPanel
+                value={0}
+                sx={{
+                  backgroundColor: "white",
+                  width: "60%",
+                }}
+              >
+                <Box sx={{ display: "flex" }}>
+                  <Box ml={1} mr={14}>
+                    <Typography
+                      sx={{
+                        fontWeight: 700,
+                        mb: "5%",
+                        textDecoration: "underline",
+                      }}
+                    >
+                      Main Information
+                    </Typography>
+                    <CustomTab>
+                      <FormLabel>Date</FormLabel>
+                      <Input type="date" placeholder="Enter the date" />
+                    </CustomTab>
+                    <CustomTab>
+                      <FormLabel>Location</FormLabel>
+                      <Box sx={{ display: "flex" }}>
+                        <Input
+                          sx={{ mr: "1em", width: "8em" }}
+                          type="number"
+                          placeholder="Latitude"
+                        />
+
+                        <Input
+                          sx={{ width: "8em" }}
+                          type="number"
+                          placeholder="Longitude"
+                        />
+                      </Box>
+                    </CustomTab>
+                    <CustomTab>
+                      <FormLabel>Status</FormLabel>
+                      <Select
+                        placeholder="Active/In active"
+                        name="status"
+                        required
+                      >
+                        <Option value="Active">Active</Option>
+                        <Option value="In active">In active</Option>
+                      </Select>
+                    </CustomTab>
+                    <CustomTab>
+                      <FormLabel>Last</FormLabel>
+                      <Input type="Date" placeholder="Enter the Date" />
+                    </CustomTab>
+                  </Box>
+                  <Box>
+                    <Typography
+                      sx={{
+                        fontWeight: 700,
+                        mb: "5%",
+                        textDecoration: "underline",
+                      }}
+                    >
+                      Items
+                    </Typography>
+                    <CustomTab>
+                      <FormLabel>Name</FormLabel>
+                      <Input sx={{ width: "8em" }} placeholder="Enter Name" />
+                    </CustomTab>
+                    <CustomTab>
+                      <FormLabel>Units</FormLabel>
+                      <Select placeholder="units" name="units" required>
+                        <Option value="unit1">unit1</Option>
+                        <Option value="unit2">unit2</Option>
+                        <Option value="unit3">unit3</Option>
+                        <Option value="unit4">unit4</Option>
+                      </Select>
+                    </CustomTab>
+                  </Box>
+                </Box>
+                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                  <Button
+                    variant="solid"
+                    color="success"
+                    onClick={() => {
+                      Updateaccord(true);
+                      Updatestockpile(false);
+                    }}
+                    sx={{ alignSelf: "flex-end" }}
+                  >
+                    previous
+                  </Button>
+                  <Button
+                    variant="solid"
+                    color="success"
+                    type="submit"
+                    sx={{ alignSelf: "flex-end" }}
+                  >
+                    Submit
+                  </Button>
+                </Box>
               </TabPanel>
             </Tabs>
           </Box>
