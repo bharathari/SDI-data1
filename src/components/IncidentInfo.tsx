@@ -3,6 +3,11 @@ import Tabs from "@mui/joy/Tabs";
 import TabList from "@mui/joy/TabList";
 import Tab from "@mui/joy/Tab";
 import TabPanel from "@mui/joy/TabPanel";
+import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import { Typography } from "@mui/material";
+import ErrorOutlineOutlined from "@mui/icons-material/ErrorOutlineOutlined";
 import {
   Accordion,
   AccordionDetails,
@@ -18,215 +23,138 @@ import {
   Option,
   Select,
   Stack,
-  Typography,
   accordionDetailsClasses,
   accordionSummaryClasses,
   styled,
 } from "@mui/joy";
-import { Path, useForm, Controller } from "react-hook-form";
+import { Path } from "react-hook-form";
 import FileUploadSharpIcon from "@mui/icons-material/FileUploadSharp";
-import { BackupOutlined } from "@mui/icons-material";
-interface IFormInputs {
-  mainInfo: {
-    title: string;
-    startDate: string;
-    endDate: string;
-    duration: string;
-    typeOfHazard: string;
-    location: string;
-    region: string;
-    harzardLevel: string | null;
-    economicLoss: string;
-  };
-  impact: {
-    deaths: {
-      deathMale: number | null;
-      deathFemale: number | null;
-      deathChild: number | null;
-      deathAdults: number | null;
-      deathElderly: number | null;
-      deathDisablePeople: number | null;
-      deathPregnancyLacting: number | null;
-      totalDeaths: number | null;
-    };
-    missing: {
-      missingMale: number | null;
-      missingFemale: number | null;
-      missingChild: number | null;
-      missingAdults: number | null;
-      missingElderly: number | null;
-      missingDisablePeople: number | null;
-      missingPregnancyLacting: number | null;
-      totalMissing: number | null;
-    };
-    injured: {
-      injuredMale: number | null;
-      injuredFemale: number | null;
-      injuredChild: number | null;
-      injuredAdults: number | null;
-      injuredElderly: number | null;
-      injuredDisablePeople: number | null;
-      injuredPregnancyLacting: number | null;
-      totalInjured: number | null;
-    };
-    affected: {
-      affectedMale: number | null;
-      affectedFemale: number | null;
-      affectedChild: number | null;
-      affectedAdults: number | null;
-      affectedElderly: number | null;
-      affectedDisablePeople: number | null;
-      affectedPregnancyLacting: number | null;
-      totalAffected: number | null;
-    };
-    relocated: {
-      relocatedMale: number | null;
-      relocatedFemale: number | null;
-      relocatedChild: number | null;
-      relocatedAdults: number | null;
-      relocatedElderly: number | null;
-      relocatedDisablePeople: number | null;
-      relocatedPregnancyLacting: number | null;
-      totalRelocated: number | null;
-    };
-    evacuated: {
-      evacuatedMale: number | null;
-      evacuatedFemale: number | null;
-      evacuatedChild: number | null;
-      evacuatedAdults: number | null;
-      evacuatedElderly: number | null;
-      evacuatedDisablePeople: number | null;
-      evacuatedPregnancyLacting: number | null;
-      totalEvacuated: number | null;
-    };
-  };
-  infrastructureImpact: {
-    damagedBuildings: {
-      mediumDamagedHouse: number | null;
-      heavilyDamangedHouse: number | null;
-      total: number | null;
-    };
-    otherBuildings: {
-      affectedEducationFacilities: number | null;
-      affectedHealthFacilities: number | null;
-      damagedPublicBuildings: number | null;
-    };
-    infrastructure: {
-      damageBridgeOrTunnel: boolean;
-      damageWaterSupply: boolean;
-      damagePowerAndtransmissionLines: boolean;
-      damageTelecommunication: boolean;
-      damageAirport: boolean;
-      damageRoad: boolean;
-      damageIndustrialFacilities: boolean;
-      other: boolean;
-    };
-    agricultureDamageInCrops: {
-      affectedAgricultureLand: number | null;
-    };
-  };
-}
-const defaultValues: IFormInputs = {
-  mainInfo: {
-    title: "",
-    startDate: "",
-    endDate: "",
-    duration: "",
-    typeOfHazard: "",
-    location: "",
-    region: "",
-    harzardLevel: "",
-    economicLoss: "",
-  },
-  impact: {
-    deaths: {
-      deathMale: null,
-      deathFemale: null,
-      deathChild: null,
-      deathAdults: null,
-      deathElderly: null,
-      deathDisablePeople: null,
-      deathPregnancyLacting: null,
-      totalDeaths: null,
-    },
-    missing: {
-      missingMale: null,
-      missingFemale: null,
-      missingChild: null,
-      missingAdults: null,
-      missingElderly: null,
-      missingDisablePeople: null,
-      missingPregnancyLacting: null,
-      totalMissing: null,
-    },
-    injured: {
-      injuredMale: null,
-      injuredFemale: null,
-      injuredChild: null,
-      injuredAdults: null,
-      injuredElderly: null,
-      injuredDisablePeople: null,
-      injuredPregnancyLacting: null,
-      totalInjured: null,
-    },
+import { ArrowLeft, BackupOutlined } from "@mui/icons-material";
+import EmergencyAlerts from "./emergencyAlerts";
+import StockPile from "./stockpile";
 
-    affected: {
-      affectedMale: null,
-      affectedFemale: null,
-      affectedChild: null,
-      affectedAdults: null,
-      affectedElderly: null,
-      affectedDisablePeople: null,
-      affectedPregnancyLacting: null,
-      totalAffected: null,
-    },
-    relocated: {
-      relocatedMale: null,
-      relocatedFemale: null,
-      relocatedChild: null,
-      relocatedAdults: null,
-      relocatedElderly: null,
-      relocatedDisablePeople: null,
-      relocatedPregnancyLacting: null,
-      totalRelocated: null,
-    },
-    evacuated: {
-      evacuatedMale: null,
-      evacuatedFemale: null,
-      evacuatedChild: null,
-      evacuatedAdults: null,
-      evacuatedElderly: null,
-      evacuatedDisablePeople: null,
-      evacuatedPregnancyLacting: null,
-      totalEvacuated: null,
-    },
-  },
-  infrastructureImpact: {
-    damagedBuildings: {
-      mediumDamagedHouse: null,
-      heavilyDamangedHouse: null,
-      total: null,
-    },
-    otherBuildings: {
-      affectedEducationFacilities: null,
-      affectedHealthFacilities: null,
-      damagedPublicBuildings: null,
-    },
-    infrastructure: {
-      damageBridgeOrTunnel: false,
-      damageWaterSupply: false,
-      damagePowerAndtransmissionLines: false,
-      damageTelecommunication: false,
-      damageAirport: false,
-      damageRoad: false,
-      damageIndustrialFacilities: false,
-      other: false,
-    },
-    agricultureDamageInCrops: {
-      affectedAgricultureLand: null,
-    },
-  },
-};
+interface MainInfo {
+
+  title: string;
+  startDate: string;
+  endDate: string;
+  duration: number | null;
+  typeOfHazard: string;
+  locationLatitude: number|null;
+  locationLongitude: number|null;
+  region: string;
+  harzardLevel: number | null;
+  economicLoss: number | null;
+
+}
+interface Impact1 {
+
+    deathMale: number | null;
+    deathFemale: number | null;
+    deathChild: number | null;
+    deathAdults: number | null;
+    deathElderly: number | null;
+    deathDisablePeople: number | null;
+    deathPregnancyLacting: number | null;
+    totalDeaths: number | null;
+
+}
+
+interface Impact2 {
+
+    missingMale: number | null;
+    missingFemale: number | null;
+    missingChild: number | null;
+    missingAdults: number | null;
+    missingElderly: number | null;
+    missingDisablePeople: number | null;
+    missingPregnancyLacting: number | null;
+    totalMissing: number | null;
+
+}
+interface Impact3 {
+
+    injuredMale: number | null;
+    injuredFemale: number | null;
+    injuredChild: number | null;
+    injuredAdults: number | null;
+    injuredElderly: number | null;
+    injuredDisablePeople: number | null;
+    injuredPregnancyLacting: number | null;
+    totalInjured: number | null;
+
+}
+interface Impact4 {
+ 
+    affectedMale: number | null;
+    affectedFemale: number | null;
+    affectedChild: number | null;
+    affectedAdults: number | null;
+    affectedElderly: number | null;
+    affectedDisablePeople: number | null;
+    affectedPregnancyLacting: number | null;
+    totalAffected: number | null;
+  };
+
+interface Impact5 {
+  
+    relocatedMale: number | null;
+    relocatedFemale: number | null;
+    relocatedChild: number | null;
+    relocatedAdults: number | null;
+    relocatedElderly: number | null;
+    relocatedDisablePeople: number | null;
+    relocatedPregnancyLacting: number | null;
+    totalRelocated: number | null;
+
+}
+interface Impact6 {
+    evacuatedMale: number | null;
+    evacuatedFemale: number | null;
+    evacuatedChild: number | null;
+    evacuatedAdults: number | null;
+    evacuatedElderly: number | null;
+    evacuatedDisablePeople: number | null;
+    evacuatedPregnancyLacting: number | null;
+    totalEvacuated: number | null;
+ 
+}
+
+interface InfrasctructureImpact1 {
+
+    mediumDamagedHouse: number | null;
+    heavilyDamagedHouse: number | null;
+    total: number | null;
+
+}
+interface InfrasctructureImpact2 {
+
+    affectedEducationFacilities: number | null;
+    affectedHealthFacilities: number | null;
+    damagedPublicBuildings: number | null;
+
+}
+interface InfrasctructureImpact3 {
+ 
+    affectedAgricultureLand: number | null;
+
+}
+
+// interface IFormInputs {
+
+//     // infrastructure: {
+//     //   damageBridgeOrTunnel: boolean;
+//     //   damageWaterSupply: boolean;
+//     //   damagePowerAndtransmissionLines: boolean;
+//     //   damageTelecommunication: boolean;
+//     //   damageAirport: boolean;
+//     //   damageRoad: boolean;
+//     //   damageIndustrialFacilities: boolean;
+//     //   other: boolean;
+//     // };
+
+//   };
+
 const Deaths = [
   { label: "Death Males", placeholder: "Type in here…", key: "deathMale" },
   { label: "Death Females", placeholder: "Type in here…", key: "deathFemale" },
@@ -244,7 +172,7 @@ const Deaths = [
     key: "deathPregnancyLacting",
   },
   { label: "Total Deaths", placeholder: "Type in here…", key: "totalDeaths" },
-];
+] as const;
 const Missings = [
   { label: "Missing Males", placeholder: "Type in here…", key: "missingMale" },
   {
@@ -503,7 +431,174 @@ const Infrastructure = [
   },
   { label: "Other", placeholder: "Type in here…", key: "other" },
 ];
+
+const mainInfoShema: Yup.ObjectSchema<MainInfo> = Yup.object().shape({
+  
+    title: Yup.string().required("Title is required"),
+    startDate: Yup.string().required("Start Date is required"),
+    endDate: Yup.string().required("End Date is required"),
+    duration: Yup.number().nullable().required().typeError('enter a valid duration'),
+    typeOfHazard: Yup.string().required("Type Of Hazard is required"),
+    locationLatitude: Yup.number().required().typeError('Enter valid latitude'),
+    locationLongitude: Yup.number().required().typeError('Enter valid longitude'),
+    region: Yup.string().required("Region is required"),
+    harzardLevel: Yup.number().nullable().required().typeError('enter valid level'),
+    economicLoss: Yup.number().nullable().required().typeError('enter a valid number'),
+});
+
+const deathSchema: Yup.ObjectSchema<Impact1> = Yup.object().shape({
+    
+      deathMale: Yup.number().nullable().required().typeError('enter a valid number'),
+      deathFemale: Yup.number().nullable().required().typeError('enter a valid number'),
+      deathChild: Yup.number().nullable().required().typeError('enter a valid number'),
+      deathAdults: Yup.number().nullable().required().typeError('enter a valid number'),
+      deathElderly: Yup.number().nullable().required().typeError('enter a valid number'),
+      deathDisablePeople: Yup.number()
+        .nullable()
+        .required().typeError('enter a valid number'),
+      deathPregnancyLacting: Yup.number()
+        .nullable()
+        .required().typeError('enter a valid number'),
+      totalDeaths: Yup.number().nullable().required().typeError('enter a valid number'),
+
+});
+
+const missingSchema: Yup.ObjectSchema<Impact2> = Yup.object().shape({
+
+    missingMale: Yup.number().nullable().required().typeError('enter a valid number'),
+    missingFemale: Yup.number().nullable().required().typeError('enter a valid number'),
+    missingChild: Yup.number().nullable().required().typeError('enter a valid number'),
+    missingAdults: Yup.number().nullable().required().typeError('enter a valid number'),
+    missingElderly: Yup.number().nullable().required().typeError('enter a valid number'),
+    missingDisablePeople: Yup.number()
+      .nullable()
+      .required().typeError('enter a valid number'),
+    missingPregnancyLacting: Yup.number()
+      .nullable()
+      .required().typeError('enter a valid number'),
+    totalMissing: Yup.number().nullable().required().typeError('enter a valid number'),
+
+});
+
+const injuredSchema: Yup.ObjectSchema<Impact3> = Yup.object().shape({
+ 
+    injuredMale: Yup.number().nullable().required().typeError('enter a valid number'),
+    injuredFemale: Yup.number().nullable().required().typeError('enter a valid number'),
+    injuredChild: Yup.number().nullable().required().typeError('enter a valid number'),
+    injuredAdults: Yup.number().nullable().required().typeError('enter a valid number'),
+    injuredElderly: Yup.number().nullable().required().typeError('enter a valid number'),
+    injuredDisablePeople: Yup.number()
+      .nullable()
+      .required().typeError('enter a valid number'),
+    injuredPregnancyLacting: Yup.number()
+      .nullable()
+      .required().typeError('enter a valid number'),
+    totalInjured: Yup.number().nullable().required().typeError('enter a valid number'),
+
+});
+
+const affectedSchema: Yup.ObjectSchema<Impact4> = Yup.object().shape({
+
+    affectedMale: Yup.number().nullable().required().typeError('enter a valid number'),
+    affectedFemale: Yup.number().nullable().required().typeError('enter a valid number'),
+    affectedChild: Yup.number().nullable().required().typeError('enter a valid number'),
+    affectedAdults: Yup.number().nullable().required().typeError('enter a valid number'),
+    affectedElderly: Yup.number().nullable().required().typeError('enter a valid number'),
+    affectedDisablePeople: Yup.number()
+      .nullable()
+      .required().typeError('enter a valid number'),
+    affectedPregnancyLacting: Yup.number()
+      .nullable()
+      .required().typeError('enter a valid number'),
+    totalAffected: Yup.number().nullable().required().typeError('enter a valid number'),
+ 
+});
+
+const relocatedSchema: Yup.ObjectSchema<Impact5> = Yup.object().shape({
+
+    relocatedMale: Yup.number().nullable().required().typeError('enter a valid number'),
+    relocatedFemale: Yup.number().nullable().required().typeError('enter a valid number'),
+    relocatedChild: Yup.number().nullable().required().typeError('enter a valid number'),
+    relocatedAdults: Yup.number().nullable().required().typeError('enter a valid number'),
+    relocatedElderly: Yup.number()
+      .nullable()
+      .required().typeError('enter a valid number'),
+    relocatedDisablePeople: Yup.number()
+      .nullable()
+      .required().typeError('enter a valid number'),
+    relocatedPregnancyLacting: Yup.number()
+      .nullable()
+      .required().typeError('enter a valid number'),
+    totalRelocated: Yup.number().nullable().required().typeError('enter a valid number'),
+
+});
+
+const evacuatedSchema: Yup.ObjectSchema<Impact6> = Yup.object().shape({
+
+    evacuatedMale: Yup.number().nullable().required().typeError('enter a valid number'),
+    evacuatedFemale: Yup.number().nullable().required().typeError('enter a valid number'),
+    evacuatedChild: Yup.number().nullable().required().typeError('enter a valid number'),
+    evacuatedAdults: Yup.number().nullable().required().typeError('enter a valid number'),
+    evacuatedElderly: Yup.number()
+      .nullable()
+      .required().typeError('enter a valid number'),
+    evacuatedDisablePeople: Yup.number()
+      .nullable()
+      .required().typeError('enter a valid number'),
+    evacuatedPregnancyLacting: Yup.number()
+      .nullable()
+      .required().typeError('enter a valid number'),
+    totalEvacuated: Yup.number().nullable().required().typeError('enter a valid number'),
+
+});
+
+const damagedBuildingsSchema: Yup.ObjectSchema<InfrasctructureImpact1> = Yup.object().shape({
+
+    mediumDamagedHouse: Yup.number()
+      .nullable()
+      .required().typeError('enter a valid number'),
+    heavilyDamagedHouse: Yup.number()
+      .nullable()
+      .required().typeError('enter a valid number'),
+    total: Yup.number().nullable().required().typeError('enter a valid number'),
+
+});
+
+const otherBuildingsSchema: Yup.ObjectSchema<InfrasctructureImpact2> = Yup.object().shape({
+ 
+    affectedEducationFacilities: Yup.number()
+      .nullable()
+      .required().typeError('enter a valid number'),
+    affectedHealthFacilities: Yup.number()
+      .nullable()
+      .required().typeError('enter a valid number'),
+    damagedPublicBuildings: Yup.number()
+      .nullable()
+      .required().typeError('enter a valid number'),
+
+});
+
+
+const agricultureDamageInCropsSchema: Yup.ObjectSchema<InfrasctructureImpact3> = Yup.object().shape({
+
+    affectedAgricultureLand: Yup.number()
+      .nullable()
+      .required().typeError('enter a valid number'),
+
+});
+
 export default function TabsBasic() {
+  const [mainInfo, setmainInfo] =React.useState<MainInfo | null>(null);
+  const [deaths, setdeaths] =React.useState<Impact1 | null>(null);
+  const [missing, setmissing] =React.useState<Impact2 | null>(null);
+  const [injured, setinjured] =React.useState<Impact3 | null>(null);
+  const [affected, setaffected] =React.useState<Impact4 | null>(null);
+  const [relocated, setrelocated] =React.useState<Impact5 | null>(null);
+  const [evacuated, setevacuated] =React.useState<Impact6 | null>(null);
+  const [damagedBuildings, setdamagedBuildings] =React.useState<InfrasctructureImpact1 | null>(null);
+  const [otherBuildings, setotherBuildings] =React.useState<InfrasctructureImpact2 | null>(null);
+  const [agricultureDamageInCrops, setagricultureDamageInCrops] =React.useState<InfrasctructureImpact3 | null>(null);
+  
   const [horizontalValue, setHorizontalValue] = React.useState(0);
   const [verticalValue, setVerticalValue] = React.useState(0);
   const [incidentInfo, UpdateInfo] = React.useState(false);
@@ -512,9 +607,97 @@ export default function TabsBasic() {
   const [saveNext, updateSave] = React.useState(true);
   const [emergencyAlerts, UpdateEmergency] = React.useState(false);
   const [stockpileLocation, Updatestockpile] = React.useState(false);
-  const { register, handleSubmit, watch, control } = useForm({
-    defaultValues,
+  
+  const {
+    register: register1,
+    handleSubmit: handleSubmit1,
+    formState: { errors: errors1 },control
+  } = useForm<MainInfo>({
+    resolver: yupResolver(mainInfoShema),
   });
+  const {
+    register: register2,
+    handleSubmit: handleSubmit2,
+    formState: { errors: errors2 },
+  } = useForm<Impact1>({
+    resolver: yupResolver(deathSchema),
+  });
+  const {
+    register: register3,
+    handleSubmit: handleSubmit3,
+    formState: { errors: errors3 },
+  } = useForm<Impact2>({
+    resolver: yupResolver(missingSchema),
+  });
+  const {
+    register: register4,
+    handleSubmit: handleSubmit4,
+    formState: { errors: errors4 },
+  } = useForm<Impact3>({
+    resolver: yupResolver(injuredSchema),
+  });
+  const {
+    register: register5,
+    handleSubmit: handleSubmit5,
+    formState: { errors: errors5 },
+  } = useForm<Impact4>({
+    resolver: yupResolver(affectedSchema),
+  });
+  const {
+    register: register6,
+    handleSubmit: handleSubmit6,
+    formState: { errors: errors6 },
+  } = useForm<Impact5>({
+    resolver: yupResolver(relocatedSchema),
+  });
+  const {
+    register: register7,
+    handleSubmit: handleSubmit7,
+    formState: { errors: errors7 },
+  } = useForm<Impact6>({
+    resolver: yupResolver(evacuatedSchema),
+  });
+  const {
+    register: register8,
+    handleSubmit: handleSubmit8,
+    formState: { errors: errors8 },
+  } = useForm<InfrasctructureImpact1>({
+    resolver: yupResolver(damagedBuildingsSchema),
+  });
+  const {
+    register: register9,
+    handleSubmit: handleSubmit9,
+    formState: { errors: errors9 },
+  } = useForm<InfrasctructureImpact2>({
+    resolver: yupResolver(otherBuildingsSchema),
+  });
+  const {
+    register: register10,
+    handleSubmit: handleSubmit10,
+    formState: { errors: errors10 },
+  } = useForm<InfrasctructureImpact3>({
+    resolver: yupResolver(agricultureDamageInCropsSchema),
+  });
+  const combinedData=()=>{
+    const formdata={
+      mainInfo:mainInfo,
+      Impact:{
+        deaths:deaths,
+        missing:missing,
+        injured:injured,
+        affected:affected,
+        relocated:relocated,
+        evacuated:evacuated,
+      },
+      infrastructure:{
+        damagedBuildings:damagedBuildings,
+        otherBuildings:otherBuildings,
+        agricultureDamageInCrops:agricultureDamageInCrops
+      }
+    }
+    console.log(formdata);
+    
+  }
   const handlePrevious = () => {
     if (verticalValue > 0) {
       setVerticalValue(verticalValue - 1);
@@ -672,9 +855,10 @@ export default function TabsBasic() {
               <TabPanel value={0} sx={{ px: 4 }}>
                 <Stack>
                   <form
-                    onSubmit={handleSubmit((data) => {
+                    onSubmit={handleSubmit1((data) => {
                       console.log(data);
                       handleNext();
+                      setmainInfo(data);
                     })}
                   >
                     <Box
@@ -690,46 +874,138 @@ export default function TabsBasic() {
                             Title
                           </FormLabel>
                           <Input
-                            {...register("mainInfo.title")}
+                            {...register1("title")}
                             placeholder="Type in here…"
+                            onChange={(e) => {
+                              e.preventDefault();
+                            }}
                           />
                         </CustomTab>
+                        {errors1.title && (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              mt: "0.1em",
+                              mb: "1em",
+                              ml: "10em",
+                            }}
+                          >
+                            <ErrorOutlineOutlined
+                              sx={{ marginRight: "0.2em", fontSize: "1em" }}
+                            />
+                            <Typography
+                              color="error"
+                              sx={{ fontSize: "0.8em" }}
+                            >
+                              {errors1.title.message}
+                            </Typography>
+                          </Box>
+                        )}
                         <CustomTab>
                           <FormLabel htmlFor="custom-input-start-date">
                             Start Date
                           </FormLabel>
                           <Input
                             type="date"
-                            {...register("mainInfo.startDate")}
+                            {...register1("startDate")}
                             placeholder="Type in here…"
+                            onChange={(e) => {
+                              e.preventDefault();
+                            }}
                           />
                         </CustomTab>
+                        {errors1.startDate && (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              mt: "0.1em",
+                              mb: "1em",
+                              ml: "10em",
+                            }}
+                          >
+                            <ErrorOutlineOutlined
+                              sx={{ marginRight: "0.2em", fontSize: "1em" }}
+                            />
+                            <Typography
+                              color="error"
+                              sx={{ fontSize: "0.8em" }}
+                            >
+                              {errors1.startDate.message}
+                            </Typography>
+                          </Box>
+                        )}
                         <CustomTab>
                           <FormLabel htmlFor="custom-input-end-date">
                             End Date
                           </FormLabel>
                           <Input
                             type="date"
-                            {...register("mainInfo.endDate")}
+                            {...register1("endDate")}
                             placeholder="Type in here…"
+                            onChange={(e) => {
+                              e.preventDefault();
+                            }}
                           />
                         </CustomTab>
+                        {errors1.endDate && (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              mt: "0.1em",
+                              mb: "1em",
+                              ml: "10em",
+                            }}
+                          >
+                            <ErrorOutlineOutlined
+                              sx={{ marginRight: "0.2em", fontSize: "1em" }}
+                            />
+                            <Typography
+                              color="error"
+                              sx={{ fontSize: "0.8em" }}
+                            >
+                              {errors1.endDate.message}
+                            </Typography>
+                          </Box>
+                        )}
                         <CustomTab>
                           <FormLabel htmlFor="custom-input-duration">
                             Duration
                           </FormLabel>
                           <Input
                             type="number"
-                            {...register("mainInfo.duration")}
+                            {...register1("duration")}
                             placeholder="Type in here…"
+                            onChange={(e) => {
+                              e.preventDefault();
+                            }}
                           />
                         </CustomTab>
+                        {errors1.duration && (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              mt: "0.1em",
+                              mb: "1em",
+                              ml: "10em",
+                            }}
+                          >
+                            <ErrorOutlineOutlined
+                              sx={{ marginRight: "0.2em", fontSize: "1em" }}
+                            />
+                            <Typography
+                              color="error"
+                              sx={{ fontSize: "0.8em" }}
+                            >
+                              {errors1.duration.message}
+                            </Typography>
+                          </Box>
+                        )}
                         <CustomTab>
                           <FormLabel htmlFor="custom-input-hazard-type">
                             Type Of Hazard
                           </FormLabel>
                           <Controller
-                            name="mainInfo.typeOfHazard"
+                            name="typeOfHazard"
                             control={control}
                             defaultValue=""
                             render={({ field }) => (
@@ -747,44 +1023,178 @@ export default function TabsBasic() {
                             )}
                           />
                         </CustomTab>
+                        {errors1.typeOfHazard && (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              mt: "0.1em",
+                              mb: "1em",
+                              ml: "10em",
+                            }}
+                          >
+                            <ErrorOutlineOutlined
+                              sx={{ marginRight: "0.2em", fontSize: "1em" }}
+                            />
+                            <Typography
+                              color="error"
+                              sx={{ fontSize: "0.8em" }}
+                            >
+                              {errors1.typeOfHazard.message}
+                            </Typography>
+                          </Box>
+                        )}
                         <CustomTab>
-                          <FormLabel htmlFor="custom-input-location">
-                            Location
-                          </FormLabel>
-                          <Input
-                            {...register("mainInfo.location")}
-                            placeholder="Type in here…"
-                          />
-                        </CustomTab>
+                    <FormLabel htmlFor="location">Location</FormLabel>
+                    <Box display={"flex"}>
+                      <Box sx={{ display: "flex", flexDirection: "column" }}>
+                        <Input
+                          sx={{ mr: 4 }}
+                          placeholder="Latitude"
+                          type="number"
+                          {...register1("locationLatitude")}
+                          onChange={(e) => {
+                            e.preventDefault();
+                          }}
+                        />
+                        {errors1.locationLatitude && (
+                          <Box sx={{ display: "flex", mt: "0.1em", mb: "1em" }}>
+                            <ErrorOutlineOutlined
+                              sx={{ marginRight: "0.2em", fontSize: "1em" }}
+                            />
+                            <Typography
+                              color="error"
+                              sx={{ fontSize: "0.8em" }}
+                            >
+                              {errors1.locationLatitude.message}
+                            </Typography>
+                          </Box>
+                        )}
+                      </Box>
+
+                      <Box sx={{ display: "flex", flexDirection: "column" }}>
+                        <Input
+                          placeholder="Longitude"
+                          type="number"
+                          {...register1("locationLongitude")}
+                          onChange={(e) => {
+                            e.preventDefault();
+                          }}
+                        />
+                        {errors1.locationLongitude && (
+                          <Box sx={{ display: "flex", mt: "0.1em", mb: "1em" }}>
+                            <ErrorOutlineOutlined
+                              sx={{ marginRight: "0.2em", fontSize: "1em" }}
+                            />
+                            <Typography
+                              color="error"
+                              sx={{ fontSize: "0.8em" }}
+                            >
+                              {errors1.locationLongitude.message}
+                            </Typography>
+                          </Box>
+                        )}
+                      </Box>
+                    </Box>
+                  </CustomTab>
+                        
                         <CustomTab>
                           <FormLabel htmlFor="custom-input-region">
                             Region
                           </FormLabel>
                           <Input
-                            {...register("mainInfo.region")}
+                            {...register1("region")}
                             placeholder="Type in here…"
+                            onChange={(e) => {
+                              e.preventDefault();
+                            }}
                           />
                         </CustomTab>
+                        {errors1.region && (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              mt: "0.1em",
+                              mb: "1em",
+                              ml: "10em",
+                            }}
+                          >
+                            <ErrorOutlineOutlined
+                              sx={{ marginRight: "0.2em", fontSize: "1em" }}
+                            />
+                            <Typography
+                              color="error"
+                              sx={{ fontSize: "0.8em" }}
+                            >
+                              {errors1.region.message}
+                            </Typography>
+                          </Box>
+                        )}
                         <CustomTab>
                           <FormLabel htmlFor="custom-input-hazard-level">
                             Hazard Level
                           </FormLabel>
                           <Input
                             type="number"
-                            {...register("mainInfo.harzardLevel")}
+                            {...register1("harzardLevel")}
                             placeholder="Type in here…"
+                            onChange={(e) => {
+                              e.preventDefault();
+                            }}
                           />
                         </CustomTab>
+                        {errors1.harzardLevel && (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              mt: "0.1em",
+                              mb: "1em",
+                              ml: "10em",
+                            }}
+                          >
+                            <ErrorOutlineOutlined
+                              sx={{ marginRight: "0.2em", fontSize: "1em" }}
+                            />
+                            <Typography
+                              color="error"
+                              sx={{ fontSize: "0.8em" }}
+                            >
+                              {errors1.harzardLevel.message}
+                            </Typography>
+                          </Box>
+                        )}
                         <CustomTab>
                           <FormLabel htmlFor="custom-input-economic-loss">
                             Economic Loss (TJS)
                           </FormLabel>
                           <Input
                             type="number"
-                            {...register("mainInfo.economicLoss")}
+                            {...register1("economicLoss")}
                             placeholder="Type in here…"
+                            onChange={(e) => {
+                              e.preventDefault();
+                            }}
                           />
                         </CustomTab>
+                        {errors1.economicLoss && (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              mt: "0.1em",
+                              mb: "1em",
+                              ml: "10em",
+                            }}
+                          >
+                            <ErrorOutlineOutlined
+                              sx={{ marginRight: "0.2em", fontSize: "1em" }}
+                            />
+                            <Typography
+                              color="error"
+                              sx={{ fontSize: "0.8em" }}
+                            >
+                              {errors1.economicLoss.message}
+                            </Typography>
+                          </Box>
+                        )}
                       </Box>
                       <IconButton
                         sx={{
@@ -800,7 +1210,7 @@ export default function TabsBasic() {
                       </IconButton>
                     </Box>
                     <Box
-                      sx={{ display: "flex", justifyContent: "space-between" }}
+                      sx={{ display: "flex", justifyContent: "space-around" }}
                     >
                       <Button
                         variant="solid"
@@ -883,9 +1293,10 @@ export default function TabsBasic() {
                   </TabList>
                   <TabPanel value={0} sx={{ backgroundColor: "white" }}>
                     <form
-                      onSubmit={handleSubmit((data) => {
+                      onSubmit={handleSubmit2((data) => {
                         console.log(data);
                         handleNext();
+                        setdeaths(data);
                       })}
                     >
                       {Deaths.map((field, index) => (
@@ -899,13 +1310,35 @@ export default function TabsBasic() {
                           <Input
                             type="number"
                             id={`death-${field.key}`}
-                            {...register(
-                              `impact.deaths.${field.key}` as Path<IFormInputs>
-                            )}
+                            {...register2(`${field.key}`)}
                             placeholder={field.placeholder}
+                            onChange={(e) => {
+                              e.preventDefault();
+                            }}
                           />
+                          {errors2[field.key] && (
+                            <Box
+                              sx={{
+                                display: "flex",
+                                mt: "0.5em",
+                                ml:'1em'
+
+                              }}
+                            >
+                              <ErrorOutlineOutlined
+                                sx={{ marginRight: "0.2em", fontSize: "1em" }}
+                              />
+                              <Typography
+                                color="error"
+                                sx={{ fontSize: "0.8em" }}
+                              >
+                                {errors2[field.key]?.message}
+                              </Typography>
+                            </Box>
+                          )}
                         </CustomTab>
                       ))}
+
                       <Box
                         sx={{
                           display: "flex",
@@ -918,7 +1351,7 @@ export default function TabsBasic() {
                           onClick={handlePrevious}
                           sx={{ alignSelf: "flex-end" }}
                         >
-                          previous
+                          Previous
                         </Button>
                         <Button
                           variant="solid"
@@ -933,8 +1366,9 @@ export default function TabsBasic() {
                   </TabPanel>
                   <TabPanel value={1} sx={{ backgroundColor: "white" }}>
                     <form
-                      onSubmit={handleSubmit((data) => {
+                      onSubmit={handleSubmit3((data) => {
                         console.log(data);
+                        setmissing(data);
                         handleNext();
                       })}
                     >
@@ -948,13 +1382,44 @@ export default function TabsBasic() {
                           </FormLabel>
                           <Input
                             type="number"
-                            {...register(
-                              `impact.missing.${field.key}` as Path<IFormInputs>
+                            {...register3(
+                              `${field.key}` as Path<Impact2>
                             )}
                             placeholder={field.placeholder}
+                            onChange={(e) => {
+                              e.preventDefault();
+                            }}
                           />
+                          {errors3[
+                            field.key as keyof typeof errors3
+                          ] && (
+                            <Box
+                              sx={{
+                                display: "flex",
+                                mt: "0.5em",
+                                ml:'1em'
+                              }}
+                            >
+                              <ErrorOutlineOutlined
+                                sx={{ marginRight: "0.2em", fontSize: "1em" }}
+                              />
+                              <Typography
+                                color="error"
+                                sx={{ fontSize: "0.8em" }}
+                              >
+                                {
+                                  (
+                                    errors3[
+                                      field.key as keyof typeof errors3
+                                    ] as any
+                                  )?.message
+                                }
+                              </Typography>
+                            </Box>
+                          )}
                         </CustomTab>
                       ))}
+
                       <Box
                         sx={{
                           display: "flex",
@@ -982,8 +1447,9 @@ export default function TabsBasic() {
                   </TabPanel>
                   <TabPanel value={2} sx={{ backgroundColor: "white" }}>
                     <form
-                      onSubmit={handleSubmit((data) => {
+                      onSubmit={handleSubmit4((data) => {
                         console.log(data);
+                        setinjured(data);
                         handleNext();
                       })}
                     >
@@ -997,13 +1463,44 @@ export default function TabsBasic() {
                           </FormLabel>
                           <Input
                             type="number"
-                            {...register(
-                              `impact.injured.${field.key}` as Path<IFormInputs>
+                            {...register4(
+                              `${field.key}` as Path<Impact3>
                             )}
                             placeholder={field.placeholder}
+                            onChange={(e) => {
+                              e.preventDefault();
+                            }}
                           />
+                          {errors4[
+                            field.key as keyof typeof errors4
+                          ] && (
+                            <Box
+                              sx={{
+                                display: "flex",
+                                mt: "0.5em",
+                                ml:'1em'
+                              }}
+                            >
+                              <ErrorOutlineOutlined
+                                sx={{ marginRight: "0.2em", fontSize: "1em" }}
+                              />
+                              <Typography
+                                color="error"
+                                sx={{ fontSize: "0.8em" }}
+                              >
+                                {
+                                  (
+                                    errors4[
+                                      field.key as keyof typeof errors4
+                                    ] as any
+                                  )?.message
+                                }
+                              </Typography>
+                            </Box>
+                          )}
                         </CustomTab>
                       ))}
+
                       <Box
                         sx={{
                           display: "flex",
@@ -1031,8 +1528,9 @@ export default function TabsBasic() {
                   </TabPanel>
                   <TabPanel value={3} sx={{ backgroundColor: "white" }}>
                     <form
-                      onSubmit={handleSubmit((data) => {
+                      onSubmit={handleSubmit5((data) => {
                         console.log(data);
+                        setaffected(data);
                         handleNext();
                       })}
                     >
@@ -1046,13 +1544,44 @@ export default function TabsBasic() {
                           </FormLabel>
                           <Input
                             type="number"
-                            {...register(
-                              `impact.affected.${field.key}` as Path<IFormInputs>
+                            {...register5(
+                              `${field.key}` as Path<Impact4>
                             )}
                             placeholder={field.placeholder}
+                            onChange={(e) => {
+                              e.preventDefault();
+                            }}
                           />
+                          {errors5[
+                            field.key as keyof typeof errors5
+                          ] && (
+                            <Box
+                              sx={{
+                                display: "flex",
+                                mt: "0.5em",
+                                ml:'1em'
+                              }}
+                            >
+                              <ErrorOutlineOutlined
+                                sx={{ marginRight: "0.2em", fontSize: "1em" }}
+                              />
+                              <Typography
+                                color="error"
+                                sx={{ fontSize: "0.8em" }}
+                              >
+                                {
+                                  (
+                                    errors5[
+                                      field.key as keyof typeof errors5
+                                    ] as any
+                                  )?.message
+                                }
+                              </Typography>
+                            </Box>
+                          )}
                         </CustomTab>
                       ))}
+
                       <Box
                         sx={{
                           display: "flex",
@@ -1080,8 +1609,9 @@ export default function TabsBasic() {
                   </TabPanel>
                   <TabPanel value={4} sx={{ backgroundColor: "white" }}>
                     <form
-                      onSubmit={handleSubmit((data) => {
+                      onSubmit={handleSubmit6((data) => {
                         console.log(data);
+                        setrelocated(data);
                         handleNext();
                       })}
                     >
@@ -1095,13 +1625,44 @@ export default function TabsBasic() {
                           </FormLabel>
                           <Input
                             type="number"
-                            {...register(
-                              `impact.relocated.${field.key}` as Path<IFormInputs>
+                            {...register6(
+                              `${field.key}` as Path<Impact5>
                             )}
                             placeholder={field.placeholder}
+                            onChange={(e) => {
+                              e.preventDefault();
+                            }}
                           />
+                          {errors6[
+                            field.key as keyof typeof errors6
+                          ] && (
+                            <Box
+                              sx={{
+                                display: "flex",
+                                mt: "0.5em",
+                                ml:'1em'
+                              }}
+                            >
+                              <ErrorOutlineOutlined
+                                sx={{ marginRight: "0.2em", fontSize: "1em" }}
+                              />
+                              <Typography
+                                color="error"
+                                sx={{ fontSize: "0.8em" }}
+                              >
+                                {
+                                  (
+                                    errors6[
+                                      field.key as keyof typeof errors6
+                                    ] as any
+                                  )?.message
+                                }
+                              </Typography>
+                            </Box>
+                          )}
                         </CustomTab>
                       ))}
+
                       <Box
                         sx={{
                           display: "flex",
@@ -1129,8 +1690,9 @@ export default function TabsBasic() {
                   </TabPanel>
                   <TabPanel value={5} sx={{ backgroundColor: "white" }}>
                     <form
-                      onSubmit={handleSubmit((data) => {
+                      onSubmit={handleSubmit7((data) => {
                         console.log(data);
+                        setevacuated(data);
                         handleNext();
                       })}
                     >
@@ -1144,13 +1706,44 @@ export default function TabsBasic() {
                           </FormLabel>
                           <Input
                             type="number"
-                            {...register(
-                              `impact.evacuated.${field.key}` as Path<IFormInputs>
+                            {...register7(
+                              `${field.key}` as Path<Impact6>
                             )}
                             placeholder={field.placeholder}
+                            onChange={(e) => {
+                              e.preventDefault();
+                            }}
                           />
+                          {errors7[
+                            field.key as keyof typeof errors7
+                          ] && (
+                            <Box
+                              sx={{
+                                display: "flex",
+                                mt: "0.5em",
+                                ml:'1em'
+                              }}
+                            >
+                              <ErrorOutlineOutlined
+                                sx={{ marginRight: "0.2em", fontSize: "1em" }}
+                              />
+                              <Typography
+                                color="error"
+                                sx={{ fontSize: "0.8em" }}
+                              >
+                                {
+                                  (
+                                    errors7[
+                                      field.key as keyof typeof errors7
+                                    ] as any
+                                  )?.message
+                                }
+                              </Typography>
+                            </Box>
+                          )}
                         </CustomTab>
                       ))}
+
                       <Box
                         sx={{
                           display: "flex",
@@ -1222,8 +1815,9 @@ export default function TabsBasic() {
                   </TabList>
                   <TabPanel value={0} sx={{ backgroundColor: "white" }}>
                     <form
-                      onSubmit={handleSubmit((data) => {
+                      onSubmit={handleSubmit8((data) => {
                         console.log(data);
+                        setdamagedBuildings(data);
                         handleNext();
                       })}
                     >
@@ -1237,13 +1831,45 @@ export default function TabsBasic() {
                           </FormLabel>
                           <Input
                             type="number"
-                            {...register(
-                              `infrastructureImpact.damagedBuildings.${field.key}` as Path<IFormInputs>
+                            {...register8(
+                              `${field.key}` as Path<InfrasctructureImpact1>
                             )}
                             placeholder={field.placeholder}
+                            onChange={(e) => {
+                              e.preventDefault();
+                            }}
                           />
+                          {errors8[
+                            field.key as keyof typeof errors8
+                          ] && (
+                            <Box
+                              sx={{
+                                display: "flex",
+                                mt: "0.5em",
+                                ml:'1em'
+                              }}
+                            >
+                              <ErrorOutlineOutlined
+                                sx={{ marginRight: "0.2em", fontSize: "1em" }}
+                              />
+                              <Typography
+                                color="error"
+                                sx={{ fontSize: "0.8em" }}
+                              >
+                                {
+                                  (
+                                    errors8
+                                    [
+                                      field.key as keyof typeof errors8
+                                    ] as any
+                                  )?.message
+                                }
+                              </Typography>
+                            </Box>
+                          )}
                         </CustomTab>
                       ))}
+
                       <Box
                         sx={{
                           display: "flex",
@@ -1271,8 +1897,9 @@ export default function TabsBasic() {
                   </TabPanel>
                   <TabPanel value={1} sx={{ backgroundColor: "white" }}>
                     <form
-                      onSubmit={handleSubmit((data) => {
+                      onSubmit={handleSubmit9((data) => {
                         console.log(data);
+                        setotherBuildings(data);
                         handleNext();
                       })}
                     >
@@ -1285,12 +1912,42 @@ export default function TabsBasic() {
                             {field.label}
                           </FormLabel>
                           <Input
-                            type="numeric"
-                            {...register(
-                              `infrastructureImpact.otherBuildings.${field.key}` as Path<IFormInputs>
+                            type="number"
+                            {...register9(
+                              `${field.key}` as Path<InfrasctructureImpact2>
                             )}
                             placeholder={field.placeholder}
+                            onChange={(e) => {
+                              e.preventDefault();
+                            }}
                           />
+                          {errors9[
+                            field.key as keyof typeof errors9
+                          ] && (
+                            <Box
+                              sx={{
+                                display: "flex",
+                                mt: "0.5em",
+                                ml:'1em'
+                              }}
+                            >
+                              <ErrorOutlineOutlined
+                                sx={{ marginRight: "0.2em", fontSize: "1em" }}
+                              />
+                              <Typography
+                                color="error"
+                                sx={{ fontSize: "0.8em" }}
+                              >
+                                {
+                                  (
+                                    errors9[
+                                      field.key as keyof typeof errors9
+                                    ] as any
+                                  )?.message
+                                }
+                              </Typography>
+                            </Box>
+                          )}
                         </CustomTab>
                       ))}
                       <Box
@@ -1318,7 +1975,7 @@ export default function TabsBasic() {
                       </Box>
                     </form>
                   </TabPanel>
-                  <TabPanel value={2} sx={{ backgroundColor: "white" }}>
+                  {/* <TabPanel value={2} sx={{ backgroundColor: "white" }}>
                     <form
                       onSubmit={handleSubmit((data) => {
                         console.log(data);
@@ -1338,7 +1995,6 @@ export default function TabsBasic() {
                             {...register(
                               `infrastructureImpact.infrastructure.${field.key}` as Path<IFormInputs>
                             )}
-                            
                           />
                         </CustomTab>
                       ))}
@@ -1366,11 +2022,13 @@ export default function TabsBasic() {
                         </Button>
                       </Box>
                     </form>
-                  </TabPanel>
+                  </TabPanel> */}
                   <TabPanel value={3} sx={{ backgroundColor: "white" }}>
                     <form
-                      onSubmit={handleSubmit((data) => {
+                      onSubmit={handleSubmit10((data) => {
                         console.log(data);
+                        setagricultureDamageInCrops(data);
+                        combinedData();
                         handleNext();
                       })}
                     >
@@ -1379,11 +2037,28 @@ export default function TabsBasic() {
                         <Input
                           type="number"
                           placeholder="Enter the number"
-                          {...register(
-                            "infrastructureImpact.agricultureDamageInCrops.affectedAgricultureLand"
+                          {...register10(
+                            "affectedAgricultureLand"
                           )}
+                          onChange={(e) => {
+                            e.preventDefault();
+                          }}
                         />
+                        
+
                       </CustomTab>
+                      {errors10?.affectedAgricultureLand && (
+                <Box
+                  sx={{ display: "flex", mt: "0.1em", mb: "1em", ml: "15em" }}
+                >
+                  <ErrorOutlineOutlined
+                    sx={{ marginRight: "0.2em", fontSize: "1em" }}
+                  />
+                  <Typography color="error" sx={{ fontSize: "0.8em" }}>
+                    {errors10.affectedAgricultureLand.message}
+                  </Typography>
+                </Box>
+              )}
                       <br />
                       <br />
                       <Box
@@ -1417,210 +2092,35 @@ export default function TabsBasic() {
           </Box>
         </>
       )}
-      {emergencyAlerts && (
-        <>
-          <Typography sx={{ fontWeight: "700", mb: "1%", mt: "2%" }}>
-            {" "}
-            Committee of Emergency Situation(CoES)/Emergency Alerts
-          </Typography>
-          <Box sx={{ width: "55%" }}>
-            <Tabs
-              aria-label="Basic tabs"
-              value={horizontalValue}
-              sx={{ backgroundColor: "white" }}
-            >
-              <TabList
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  backgroundColor: "white",
-                }}
-              >
-                <Tab disableIndicator color="success" variant="plain">
-                  Emergency Alerts
-                </Tab>
-              </TabList>
-              <TabPanel
-                value={0}
-                sx={{
-                  backgroundColor: "white",
-                  width: "60%",
-                  alignSelf: "center",
-                }}
-              >
-                <CustomTab>
-                  <FormLabel>Date</FormLabel>
-                  <Input type="date" placeholder="Enter Date" />
-                </CustomTab>
-                <CustomTab>
-                  <FormLabel>Alert type</FormLabel>
-                  <Select placeholder="Alert type" name="alert" required>
-                    <Option value="alerttype1">alerttype1</Option>
-                    <Option value="alerttype2">alerttype2</Option>
-                    <Option value="alerttype3">alerttype3</Option>
-                    <Option value="alerttype4">alerttype4</Option>
-                  </Select>
-                </CustomTab>
-                <CustomTab>
-                  <FormLabel>Affected area(in Sqkm)</FormLabel>
-                  <Input type="number" placeholder="No of sqkm Affected" />
-                </CustomTab>
-                <CustomTab>
-                  <FormLabel>Instructions</FormLabel>
-                  <Input type="number" placeholder="Enter the Instructions" />
-                </CustomTab>
-
-                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                  <Button
-                    variant="solid"
-                    color="success"
-                    onClick={() => {
-                      Updateaccord(true);
-                      UpdateEmergency(false);
-                    }}
-                    sx={{ alignSelf: "flex-end" }}
-                  >
-                    previous
-                  </Button>
-                  <Button
-                    variant="solid"
-                    color="success"
-                    type="submit"
-                    sx={{ alignSelf: "flex-end" }}
-                  >
-                    Submit
-                  </Button>
-                </Box>
-              </TabPanel>
-            </Tabs>
-          </Box>
-        </>
+      {emergencyAlerts&&(<>
+        <Button
+        variant="outlined"
+        color="success"
+        onClick={() => {
+          Updateaccord(true);
+          UpdateEmergency(false);
+        }}
+        sx={{ alignSelf: "flex-start" }}
+      >
+        <ArrowLeft/>
+      </Button>
+        <EmergencyAlerts/>
+      </>
       )}
-      {stockpileLocation && (
+      {stockpileLocation&&(
         <>
-          <Typography sx={{ fontWeight: "700", mb: "1%", mt: "1%" }}>
-            Committee of Emergency Situation(CoES)/StockPile Location
-          </Typography>
-          <Box sx={{ width: "55%" }}>
-            <Tabs
-              aria-label="Basic tabs"
-              value={horizontalValue}
-              sx={{ backgroundColor: "white" }}
-            >
-              <TabList
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  backgroundColor: "white",
-                }}
-              >
-                <Tab disableIndicator color="success" variant="plain">
-                  Stockpile Location
-                </Tab>
-              </TabList>
-              <TabPanel
-                value={0}
-                sx={{
-                  backgroundColor: "white",
-                  width: "60%",
-                }}
-              >
-                <Box sx={{ display: "flex" }}>
-                  <Box ml={1} mr={14}>
-                    <Typography
-                      sx={{
-                        fontWeight: 700,
-                        mb: "5%",
-                        textDecoration: "underline",
-                      }}
-                    >
-                      Main Information
-                    </Typography>
-                    <CustomTab>
-                      <FormLabel>Date</FormLabel>
-                      <Input type="date" placeholder="Enter the date" />
-                    </CustomTab>
-                    <CustomTab>
-                      <FormLabel>Location</FormLabel>
-                      <Box sx={{ display: "flex" }}>
-                        <Input
-                          sx={{ mr: "1em", width: "8em" }}
-                          type="number"
-                          placeholder="Latitude"
-                        />
-
-                        <Input
-                          sx={{ width: "8em" }}
-                          type="number"
-                          placeholder="Longitude"
-                        />
-                      </Box>
-                    </CustomTab>
-                    <CustomTab>
-                      <FormLabel>Status</FormLabel>
-                      <Select
-                        placeholder="Active/In active"
-                        name="status"
-                        required
-                      >
-                        <Option value="Active">Active</Option>
-                        <Option value="In active">In active</Option>
-                      </Select>
-                    </CustomTab>
-                    <CustomTab>
-                      <FormLabel>Last</FormLabel>
-                      <Input type="Date" placeholder="Enter the Date" />
-                    </CustomTab>
-                  </Box>
-                  <Box>
-                    <Typography
-                      sx={{
-                        fontWeight: 700,
-                        mb: "5%",
-                        textDecoration: "underline",
-                      }}
-                    >
-                      Items
-                    </Typography>
-                    <CustomTab>
-                      <FormLabel>Name</FormLabel>
-                      <Input sx={{ width: "8em" }} placeholder="Enter Name" />
-                    </CustomTab>
-                    <CustomTab>
-                      <FormLabel>Units</FormLabel>
-                      <Select placeholder="units" name="units" required>
-                        <Option value="unit1">unit1</Option>
-                        <Option value="unit2">unit2</Option>
-                        <Option value="unit3">unit3</Option>
-                        <Option value="unit4">unit4</Option>
-                      </Select>
-                    </CustomTab>
-                  </Box>
-                </Box>
-                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                  <Button
-                    variant="solid"
-                    color="success"
-                    onClick={() => {
-                      Updateaccord(true);
-                      Updatestockpile(false);
-                    }}
-                    sx={{ alignSelf: "flex-end" }}
-                  >
-                    previous
-                  </Button>
-                  <Button
-                    variant="solid"
-                    color="success"
-                    type="submit"
-                    sx={{ alignSelf: "flex-end" }}
-                  >
-                    Submit
-                  </Button>
-                </Box>
-              </TabPanel>
-            </Tabs>
-          </Box>
+         <Button
+        variant="outlined"
+        color="success"
+        onClick={() => {
+          Updateaccord(true);
+          Updatestockpile(false);
+        }}
+        sx={{ alignSelf: "flex-start" }}
+      >
+        <ArrowLeft/>
+      </Button>
+        <StockPile/>
         </>
       )}
     </>

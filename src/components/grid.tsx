@@ -15,13 +15,18 @@ import Tab, { tabClasses } from '@mui/joy/Tab';
 import { Button, TabPanel } from "@mui/joy";
 import GroupAppBar from "./group-header";
 import GroupList from "./group-cards";
-import TabsBasic from "./forms";
-import TabsBasic3 from "./forms3";
+import TabsBasic from "./IncidentInfo";
+import Geology from "./Geology-form";
+import Sciences from "./sciences-form";
+import Hydeology from "./Hydrology-form";
 interface ListItem {
   key: string;
   value: string;
 }
-
+const org1="CoES"
+const org2="Agency"
+const org3="Geology"
+const org4="Academy"
 const Item = styled(Sheet)(({ theme }) => ({
   backgroundColor: "transparent",
   ...theme.typography["body-sm"],
@@ -167,8 +172,20 @@ export default function BasicGrid() {
       <TabPanel value={3}>
         <b>Third</b> tab panel
       </TabPanel>
+
       <TabPanel value={4} sx={{backgroundColor:'white',display:'flex',flexDirection:'column',alignItems:'center'}}>
+        {org1==="CoES" &&(
         <TabsBasic/>
+      )}
+      {/* {org2==="Agency"&&(
+        <Hydeology/>
+      )} */}
+      {/* {org3==="Geology"&&(
+        <Geology/>
+      )} */}
+      {/* {org4==="Academy"&&(
+        <Sciences/>
+      )} */}
       </TabPanel>
       </Tabs>
     </>
